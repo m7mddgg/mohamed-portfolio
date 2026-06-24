@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mohamed Abdalrasoul Ahmed — CV</title>
+  <meta name="description" content="CV / Resume of Mohamed Abdalrasoul Ahmed — AI Student, Competitive Programmer, Backend Developer." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --text-primary: #1a1a2e;
+      --text-secondary: #444;
+      --text-muted: #666;
+      --accent: #1a1a2e;
+      --border: #1a1a2e;
+      --border-light: #d1d5db;
+      --link: #1a5276;
+      --bg: #ffffff;
+      --page-max: 800px;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f0f0f0;
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Page / A4 Container ─── */
+    .cv-page {
+      max-width: var(--page-max);
+      margin: 32px auto;
+      background: var(--bg);
+      padding: 48px 56px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.12);
+      border-radius: 4px;
+    }
+
+    /* ─── Top actions bar ─── */
+    .actions-bar {
+      max-width: var(--page-max);
+      margin: 0 auto 0;
+      padding: 16px 0 0;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .actions-bar a,
+    .actions-bar button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #333;
+    }
+
+    .actions-bar a:hover,
+    .actions-bar button:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .actions-bar .primary-btn {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .actions-bar .primary-btn:hover {
+      background: #111;
+    }
+
+    /* ─── Header ─── */
+    .cv-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .cv-header h1 {
+      font-family: 'Merriweather', 'Georgia', serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .cv-header .contact-line {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .cv-header .contact-line a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    .cv-header .contact-line a:hover {
+      text-decoration: underline;
+    }
+
+    .cv-header .contact-line .sep {
+      color: #bbb;
+    }
+
+    /* ─── Section ─── */
+    .cv-section {
+      margin-bottom: 18px;
+    }
+
+    .cv-section-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+    }
+
+    /* ─── Entry (Education / Experience) ─── */
+    .cv-entry {
+      margin-bottom: 14px;
+    }
+
+    .cv-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .cv-entry-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .cv-entry-right {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .cv-entry-subtitle {
+      font-size: 13px;
+      font-style: italic;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .cv-entry-subtitle span:last-child {
+      font-style: italic;
+      text-align: right;
+    }
+
+    /* ─── Bullet list ─── */
+    .cv-bullets {
+      list-style: disc;
+      padding-left: 20px;
+      margin-top: 4px;
+    }
+
+    .cv-bullets li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 2px;
+    }
+
+    /* ─── Project entry ─── */
+    .cv-project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .cv-project-header .title-part {
+      font-size: 14px;
+    }
+
+    .cv-project-header .title-part strong {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .cv-project-header .year {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ─── Skills ─── */
+    .cv-skills {
+      margin-bottom: 4px;
+    }
+
+    .cv-skills p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .cv-skills p strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* ─── Print styles ─── */
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .cv-page {
+        margin: 0;
+        padding: 36px 48px;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .actions-bar {
+        display: none !important;
+      }
+
+      a {
+        color: var(--text-primary) !important;
+      }
+    }
+
+    /* ─── Mobile responsive ─── */
+    @media (max-width: 640px) {
+      .cv-page {
+        margin: 12px;
+        padding: 28px 24px;
+      }
+
+      .cv-header h1 {
+        font-size: 22px;
+      }
+
+      .cv-header .contact-line {
+        font-size: 11px;
+      }
+
+      .cv-entry-header,
+      .cv-entry-subtitle,
+      .cv-project-header {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .cv-entry-right,
+      .cv-project-header .year {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Action Buttons -->
+  <div class="actions-bar">
+    <a href="/" style="text-decoration:none;">← Back to Portfolio</a>
+    <button class="primary-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print / Save PDF
+    </button>
+  </div>
+
+  <!-- CV Document -->
+  <div class="cv-page">
+
+    <!-- Header -->
+    <header class="cv-header">
+      <h1>Mohamed Abdalrasoul Ahmed</h1>
+      <div class="contact-line">
+        <span>+20 120 516 9491</span>
+        <span class="sep">|</span>
+        <span>Egypt</span>
+        <span class="sep">|</span>
+        <a href="mailto:mohamedabdalrasoul@gmail.com">mohamedabdalrasoul@gmail.com</a>
+        <span class="sep">|</span>
+        <a href="https://linkedin.com/in/mohamedabdalrasoul00" target="_blank" rel="noopener">linkedin.com/in/mohamedabdalrasoul00</a>
+        <span class="sep">|</span>
+        <a href="https://github.com/m7mddgg" target="_blank" rel="noopener">github.com/m7mddgg</a>
+      </div>
+    </header>
+
+    <!-- Education -->
+    <section class="cv-section">
+      <h2 class="cv-section-title">Education</h2>
+      <div class="cv-entry">
+        <div class="cv-entry-header">
+          <span class="cv-entry-title">Badr University in Assiut (BUA)</span>
+          <span class="cv-entry-right">Assiut, Egypt</span>
+        </div>
+        <div class="cv-entry-subtitle">
+          <span>Bachelor's Degree, School of Artificial Intelligence & Data Management (GPA: 3.1)</span>
+          <span>Oct. 2024 – Jul. 2028</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="cv-section">
+      <h2 class="cv-section-title">Experience</h2>
+      <div class="cv-entry">
+        <div class="cv-entry-header">
+          <span class="cv-entry-title">ICPC BUA | Co-Lead</span>
+          <span class="cv-entry-right">Oct. 2025 – Present</span>
+        </div>
+        <div class="cv-entry-subtitle">
+          <span>Competitive Programming Community</span>
+          <span>Assiut, Egypt</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Co-led a competitive programming community of 80 active members at Badr University in Assiut, driving engagement in algorithmic problem-solving.</li>
+          <li>Organized and led a major university orientation session, coordinating a team of 9 members to introduce over 560 new students to the ICPC environment.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="cv-section">
+      <h2 class="cv-section-title">Projects</h2>
+
+      <div class="cv-entry">
+        <div class="cv-project-header">
+          <div class="title-part"><strong>Cleano</strong> | Full-Stack Web Application</div>
+          <span class="year">2025</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Developed a comprehensive web application for managing housekeeping and cleaning services, featuring a dual-interface structure (customer portal and admin dashboard).</li>
+          <li>Implemented user authentication, database integration, and order tracking systems to manage service requests efficiently.</li>
+          <li>Engineered admin dashboard features including staff assignment management, revenue tracking, data visualization tools, and automated invoice generation.</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-project-header">
+          <div class="title-part"><strong>VISIONAID</strong> (Team: Binary Mind)</div>
+          <span class="year">2025</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Contributed to the planning and technical documentation of an AI-based assistive system.</li>
+          <li>Collaborated with team members to develop a comprehensive Work Breakdown Structure (WBS) and specify functional requirements, including hardware interface specifications.</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-project-header">
+          <div class="title-part"><strong>Community Automation Workflow</strong> | n8n</div>
+          <span class="year">2025</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Built an automated workflow connecting community registration forms directly to Google Sheets using the n8n platform.</li>
+          <li>Gained foundational experience in workflow automation and system integrations, improving community data management.</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-project-header">
+          <div class="title-part"><strong>Learn Competitive Programming</strong></div>
+          <span class="year">2025</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Launched a structured project to promote algorithmic problem-solving within the student community.</li>
+          <li>Directed the creation of technical and visual branding assets to engage students and encourage participation in coding competitions.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Technical Skills -->
+    <section class="cv-section">
+      <h2 class="cv-section-title">Technical Skills</h2>
+      <div class="cv-skills">
+        <p><strong>Languages:</strong> C++, Python, Java, C#, SQL</p>
+        <p><strong>Tools/Methodologies:</strong> Workflow Automation (n8n), Git, Software Engineering Principles</p>
+        <p><strong>Concepts:</strong> Object-Oriented Programming (OOP), Data Structures & Algorithms, Competitive Programming, Databases</p>
+        <p><strong>Soft Skills:</strong> Problem Solving, Leadership, Analytical Thinking, Self-Learning, Teamwork</p>
+      </div>
+    </section>
+
+    <!-- Achievements -->
+    <section class="cv-section">
+      <h2 class="cv-section-title">Achievements</h2>
+      <ul class="cv-bullets">
+        <li><strong>Codeforces:</strong> Solved 600+ problems, demonstrating advanced proficiency in data structures and algorithmic optimization.</li>
+        <li><strong>Egyptian Collegiate Programming Contest (ECPC) 2025:</strong> Competed as a contestant in the national programming competition, applying advanced algorithms under strict time constraints.</li>
+      </ul>
+    </section>
+
+  </div>
+
+</body>
+</html>
