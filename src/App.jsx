@@ -124,6 +124,7 @@ const PROJECTS = [
       'Engineered admin dashboard features including staff assignment management, revenue tracking, data visualization tools, and automated invoice generation.',
     ],
     tags: ['Full-Stack', 'Auth', 'Dashboard', 'Database'],
+    link: 'https://cleano-tf.vercel.app/',
   },
   {
     title: 'VISIONAID',
@@ -286,26 +287,47 @@ function App() {
       </motion.nav>
 
       {/* ═══════════ HERO ═══════════ */}
-      <section id="hero" className="min-h-screen flex flex-col justify-center items-center relative z-10 px-4">
+      <section id="hero" className="min-h-screen flex flex-col md:flex-row justify-center items-center relative z-10 px-4 gap-12 md:gap-20 max-w-6xl mx-auto pt-20 md:pt-0">
+        
+        {/* Profile Image (Left on Desktop) */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: 'easeOut' }}
-          className="text-center max-w-3xl"
+          initial={{ opacity: 0, x: -50, scale: 0.9 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="relative w-56 h-56 md:w-80 md:h-80 shrink-0"
         >
+          <motion.div
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-full h-full relative"
+          >
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyberCyan to-cyberNeon blur-xl opacity-60 animate-pulse" />
+            <img 
+              src="/profile.jpg" 
+              alt="Mohamed Abdalrasoul" 
+              className="relative z-10 w-full h-full object-cover rounded-full border-4 border-slate-900 shadow-[0_0_50px_rgba(0,240,255,0.2)]"
+            />
+          </motion.div>
+        </motion.div>
 
-
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 leading-[1.1]">
+        {/* Text Content (Right on Desktop) */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+          className="text-center md:text-left max-w-2xl"
+        >
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
             <span className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Mohamed</span>
             <br />
             <span className="text-cyberCyan">Abdalrasoul</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-400 font-light max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-lg md:text-xl text-slate-400 font-light mb-8 leading-relaxed">
             AI & Data Science Student • Competitive Programmer • Building high-performance systems and leading technical communities.
           </p>
 
-          <div className="flex flex-wrap gap-4 justify-center mb-10">
+          <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-10">
             <a href="#projects" className="inline-flex items-center gap-2 px-6 py-3 bg-cyberCyan/10 border border-cyberCyan/30 text-cyberCyan rounded-xl font-semibold text-sm hover:bg-cyberCyan/20 hover:border-cyberCyan/50 transition-all duration-300 hover:shadow-[0_0_25px_-5px_rgba(0,240,255,0.3)]">
               <FolderGit2 size={16} />
               View Projects
@@ -316,7 +338,7 @@ function App() {
             </a>
           </div>
 
-          <div className="flex gap-5 justify-center">
+          <div className="flex gap-5 justify-center md:justify-start">
             {[
               { Icon: Github, href: 'https://github.com/m7mddgg', hoverColor: '#00f0ff' },
               { Icon: Linkedin, href: 'https://linkedin.com/in/mohamedabdalrasoul00', hoverColor: '#00f0ff' },
@@ -474,7 +496,14 @@ function App() {
                     <div className={`p-3 rounded-xl ${proj.color === 'cyan' ? 'bg-cyberCyan/10 text-cyberCyan' : 'bg-cyberNeon/10 text-cyberNeon'}`}>
                       <proj.icon size={24} />
                     </div>
-                    <span className="text-xs font-mono text-slate-600">{proj.year}</span>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="text-xs font-mono text-slate-600">{proj.year}</span>
+                      {proj.link && (
+                        <a href={proj.link} target="_blank" rel="noopener noreferrer" className={`p-1.5 rounded-lg transition-colors ${proj.color === 'cyan' ? 'text-cyberCyan hover:bg-cyberCyan/10' : 'text-cyberNeon hover:bg-cyberNeon/10'}`} title="Visit Project">
+                          <ExternalLink size={16} />
+                        </a>
+                      )}
+                    </div>
                   </div>
 
                   <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyberCyan transition-colors">{proj.title}</h3>
