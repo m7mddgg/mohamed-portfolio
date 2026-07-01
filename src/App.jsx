@@ -113,6 +113,20 @@ const EXPERIENCE = [
 
 const PROJECTS = [
   {
+    title: 'Tafayyu (تفيُّؤ)',
+    subtitle: 'Comprehensive Islamic Web App',
+    year: '2026',
+    icon: BookOpen,
+    color: 'cyan',
+    points: [
+      'Developed a modern, interactive Quran reader with live recitation synchronization, smart search, and auto-scrolling.',
+      'Engineered an interactive memorization tracker, daily adhkar module, and smart tasbeeh with haptic feedback.',
+      'Integrated accurate prayer times, Qibla compass, Hijri calendar, and offline-ready PWA capabilities using Next.js and Tailwind CSS.',
+    ],
+    tags: ['Next.js', 'React', 'Tailwind', 'PWA'],
+    link: 'https://tafayyu-quran.vercel.app/',
+  },
+  {
     title: 'Cleano',
     subtitle: 'Full-Stack Web Application',
     year: '2025',
