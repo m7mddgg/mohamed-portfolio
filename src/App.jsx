@@ -338,7 +338,7 @@ function App() {
           </h1>
 
           <p className="text-lg md:text-xl text-slate-400 font-light mb-8 leading-relaxed">
-            CS Student • Backend .NET Developer • Competitive Programmer • Building high-performance systems and leading technical communities.
+            CS Student • Backend .NET Developer
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-10">
