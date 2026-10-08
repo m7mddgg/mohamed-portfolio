@@ -93,8 +93,7 @@ const NAV_LINKS = [
 const STATS = [
   { icon: Award, label: 'Academic GPA', value: 3.1, decimals: 1, color: 'cyan' },
   { icon: Code, label: 'Codeforces Problems', value: 600, prefix: '+', color: 'neon' },
-  { icon: Users, label: 'Community Members', value: 80, prefix: '+', color: 'cyan' },
-  { icon: Rocket, label: 'Students Oriented', value: 560, prefix: '+', color: 'neon' },
+  { icon: Trophy, label: 'Codeforces Rank', stringValue: 'Pupil', color: 'cyan' },
 ];
 
 const EXPERIENCE = [
@@ -439,15 +438,15 @@ function App() {
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {STATS.map((s, i) => (
               <FadeIn key={s.label} delay={0.1 * i}>
-                <GlassCard className="p-6 text-center">
+                <GlassCard className="p-6 text-center h-full">
                   <div className={`inline-flex p-3 rounded-xl mb-3 ${s.color === 'cyan' ? 'bg-cyberCyan/10 text-cyberCyan' : 'bg-cyberNeon/10 text-cyberNeon'}`}>
                     <s.icon size={22} />
                   </div>
                   <h3 className="text-3xl font-black text-white font-mono">
-                    {s.prefix || ''}<Counter from={0} to={s.value} decimals={s.decimals || 0} />
+                    {s.prefix || ''}{s.stringValue ? s.stringValue : <Counter from={0} to={s.value} decimals={s.decimals || 0} />}
                   </h3>
                   <p className="text-xs text-slate-500 uppercase tracking-wider font-mono mt-1">{s.label}</p>
                 </GlassCard>
