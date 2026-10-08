@@ -197,14 +197,14 @@ const SKILLS = {
 const ACHIEVEMENTS = [
   {
     icon: Code,
-    title: 'Codeforces — 600+ Problems',
-    description: 'Demonstrated advanced proficiency in data structures and algorithmic optimization through solving 600+ competitive programming problems.',
+    title: 'Codeforces Pupil — 600+ Problems',
+    description: 'Achieved Pupil rank and demonstrated advanced proficiency in data structures and algorithmic optimization through solving 600+ competitive programming problems.',
     color: 'cyan',
   },
   {
     icon: Trophy,
-    title: 'ECPC 2025 Contestant',
-    description: 'Competed in the Egyptian Collegiate Programming Contest (ECPC) 2025, applying advanced algorithms under strict time constraints at the national level.',
+    title: 'ECPC 2025 & 2026 Contestant',
+    description: 'Competed in the Egyptian Collegiate Programming Contest (ECPC) in 2025 and 2026. Ranked 67th on the contest day in 2026, applying advanced algorithms under strict time constraints at the national level.',
     color: 'neon',
   },
 ];
