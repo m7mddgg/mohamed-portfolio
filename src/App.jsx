@@ -98,10 +98,20 @@ const STATS = [
 
 const EXPERIENCE = [
   {
+    role: 'Leader',
+    org: 'ICPC BUA',
+    type: 'Competitive Programming Community',
+    period: 'Sep. 2026 – Present',
+    location: 'Assiut, Egypt',
+    points: [
+      'Leading the competitive programming community at Badr University in Assiut, overseeing training strategies and community development.',
+    ],
+  },
+  {
     role: 'Co-Lead',
     org: 'ICPC BUA',
     type: 'Competitive Programming Community',
-    period: 'Oct. 2025 – Present',
+    period: 'Oct. 2025 – Sep. 2026',
     location: 'Assiut, Egypt',
     points: [
       'Co-led a competitive programming community of 80+ active members at Badr University in Assiut, driving engagement in algorithmic problem-solving.',
