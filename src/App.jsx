@@ -338,7 +338,7 @@ function App() {
           </h1>
 
           <p className="text-lg md:text-xl text-slate-400 font-light mb-8 leading-relaxed">
-            AI & Data Science Student • Competitive Programmer • Building high-performance systems and leading technical communities.
+            CS Student • Backend .NET Developer • Competitive Programmer • Building high-performance systems and leading technical communities.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-10">
@@ -401,11 +401,11 @@ function App() {
                   <div className="border-l-2 border-cyberCyan/30 pl-5 space-y-1">
                     <h4 className="text-lg font-semibold text-slate-200">Badr University in Assiut (BUA)</h4>
                     <p className="text-sm text-cyberCyan font-mono">Bachelor's Degree • Oct. 2024 – Jul. 2028</p>
-                    <p className="text-sm text-slate-400">School of Artificial Intelligence & Data Management</p>
+                    <p className="text-sm text-slate-400">Computer Science</p>
                     <p className="text-sm text-slate-500 mt-2">GPA: <span className="text-white font-bold">3.1</span></p>
                   </div>
                   <p className="text-slate-400 text-sm mt-6 leading-relaxed">
-                    Focused on computer science core disciplines, artificial intelligence principles, and high-performance algorithmic problem-solving. Active contributor to the ICPC competitive programming community.
+                    Focused on computer science core disciplines, backend development, and high-performance algorithmic problem-solving. Active contributor to the ICPC competitive programming community.
                   </p>
                 </div>
               </GlassCard>
