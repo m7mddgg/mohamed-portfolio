@@ -520,7 +520,7 @@ const Hero = ({ start = true }) => {
         </p>
 
         {/* Call to Actions */}
-        <div className="hero-actions inline-flex flex-wrap items-center justify-center gap-4">
+        <div className="hero-actions inline-flex flex-wrap items-center justify-center gap-4 mb-12 sm:mb-16">
           <RingLink
             href="#work"
             outerClassName="transition-transform duration-300 hover:scale-105"
@@ -544,14 +544,14 @@ const Hero = ({ start = true }) => {
             </span>
           </a>
         </div>
-      </div>
 
-      {/* Scroll Down Indicator */}
-      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
-        <span className="text-[11px] font-mono tracking-[0.25em] text-neutral-500 uppercase">Scroll</span>
-        <span className="relative block h-10 w-px overflow-hidden bg-neutral-800">
-          <span className="pf-gradient animate-scroll-down absolute inset-x-0 top-0 block h-1/2 w-full" />
-        </span>
+        {/* Scroll Down Indicator (in natural flow to prevent any overlap) */}
+        <div className="flex flex-col items-center gap-2 pt-2 opacity-80">
+          <span className="text-[11px] font-mono tracking-[0.25em] text-neutral-500 uppercase">Scroll</span>
+          <span className="relative block h-8 w-px overflow-hidden bg-neutral-800">
+            <span className="pf-gradient animate-scroll-down absolute inset-x-0 top-0 block h-1/2 w-full" />
+          </span>
+        </div>
       </div>
     </section>
   );
