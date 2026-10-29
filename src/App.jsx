@@ -1,698 +1,1038 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, animate, useInView } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
+import gsap from 'gsap';
 import {
-  Mail, Code, Terminal, Cpu, Award, ChevronDown,
-  Briefcase, FolderGit2, Wrench, Trophy, Phone,
-  MapPin, Users, Zap, Brain, Database, GitBranch,
-  ExternalLink, ArrowUp, GraduationCap, Workflow,
-  Eye, BookOpen, Rocket, Send, Menu, X, FileText,
+  ArrowUpRight,
+  ArrowRight,
+  ExternalLink,
+  FileText,
+  Terminal,
+  Trophy,
+  Briefcase,
+  Layers,
+  Code2,
+  X,
+  Phone,
+  Mail,
+  MapPin,
+  Sparkles,
+  ChevronRight,
+  Award
 } from 'lucide-react';
+import { cn } from './lib/utils';
 
-/* ───────── Brand SVG Icons (removed from lucide v1.x) ───────── */
-const Github = ({ size = 24, ...props }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
-    <path d="M9 18c-4.51 2-5-2-7-2"/>
-  </svg>
-);
-const Linkedin = ({ size = 24, ...props }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-    <rect width="4" height="12" x="2" y="9"/>
-    <circle cx="4" cy="4" r="2"/>
-  </svg>
-);
-
-/* ───────── Animated Counter ───────── */
-const Counter = ({ from = 0, to, duration = 2, decimals = 0 }) => {
-  const [count, setCount] = useState(Number(from).toFixed(decimals));
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
-
-  useEffect(() => {
-    if (!isInView) return;
-    const controls = animate(from, to, {
-      duration,
-      ease: 'easeOut',
-      onUpdate: (v) => setCount(v.toFixed(decimals)),
-    });
-    return () => controls.stop();
-  }, [isInView, from, to, duration, decimals]);
-
-  return <span ref={ref}>{count}</span>;
+/* ─── DATA CONFIGURATION ─── */
+const PERSONAL_INFO = {
+  name: 'Mohamed Abdalrasoul',
+  initials: 'MA',
+  location: 'Assiut, Egypt',
+  email: 'mohamedabdalrasoul@gmail.com',
+  phone: '+20 120 516 9491',
+  github: 'https://github.com/m7mddgg',
+  linkedin: 'https://linkedin.com/in/mohamedabdalrasoul00',
+  codeforces: 'https://codeforces.com/profile/m7mddgg',
+  roles: ['Backend .NET Developer', 'Competitive Programmer', 'ICPC Leader', 'CS Student'],
+  bio: 'Specializing in robust backend systems, clean architecture, and competitive algorithmic optimization with an emphasis on high scalability and precision.',
 };
 
-/* ───────── Fade-In Wrapper ───────── */
-const FadeIn = ({ children, delay = 0, direction = 'up', className = '' }) => {
-  const y = direction === 'up' ? 40 : direction === 'down' ? -40 : 0;
-  const x = direction === 'left' ? 40 : direction === 'right' ? -40 : 0;
-  return (
-    <motion.div
-      initial={{ opacity: 0, y, x }}
-      whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.6, delay, ease: 'easeOut' }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-/* ───────── Section Title ───────── */
-const SectionTitle = ({ icon: Icon, title, subtitle }) => (
-  <FadeIn className="mb-12 text-center">
-    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyberCyan/5 border border-cyberCyan/20 text-cyberCyan text-xs font-mono uppercase tracking-widest mb-4">
-      <Icon size={14} />
-      {subtitle}
-    </div>
-    <h2 className="text-3xl md:text-4xl font-extrabold text-white">{title}</h2>
-  </FadeIn>
-);
-
-/* ───────── Glass Card ───────── */
-const GlassCard = ({ children, className = '', hover = true }) => (
-  <div className={`bg-slate-900/40 border border-slate-800 rounded-2xl backdrop-blur-md overflow-hidden ${hover ? 'transition-all duration-300 hover:border-cyberCyan/30 hover:shadow-[0_0_30px_-10px_rgba(0,240,255,0.15)]' : ''} ${className}`}>
-    {children}
-  </div>
-);
-
-/* ═══════════════════════════════════════════════════════ */
-/*                         DATA                          */
-/* ═══════════════════════════════════════════════════════ */
 const NAV_LINKS = [
-  { label: 'Home', href: '#hero' },
-  { label: 'About', href: '#about' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Contact', href: '#contact' },
-  { label: 'CV', href: '/cv.html', external: true },
-];
-
-const STATS = [
-  { icon: Award, label: 'Academic GPA', value: 3.1, decimals: 1, color: 'cyan' },
-  { icon: Code, label: 'Codeforces Problems', value: 600, prefix: '+', color: 'neon' },
-  { icon: Trophy, label: 'Codeforces Rank', stringValue: 'Pupil', color: 'cyan' },
-];
-
-const EXPERIENCE = [
-  {
-    role: 'Leader',
-    org: 'ICPC BUA',
-    type: 'Competitive Programming Community',
-    period: 'Sep. 2026 – Present',
-    location: 'Assiut, Egypt',
-    points: [
-      'Leading the competitive programming community at Badr University in Assiut, overseeing training strategies and community development.',
-    ],
-  },
-  {
-    role: 'Co-Lead',
-    org: 'ICPC BUA',
-    type: 'Competitive Programming Community',
-    period: 'Oct. 2025 – Sep. 2026',
-    location: 'Assiut, Egypt',
-    points: [
-      'Co-led a competitive programming community of 80+ active members at Badr University in Assiut, driving engagement in algorithmic problem-solving.',
-      'Organized and led a major university orientation session, coordinating a team of 9 members to introduce over 560 new students to the ICPC environment.',
-    ],
-  },
+  { label: 'Home', href: '#home', id: 'home' },
+  { label: 'Work', href: '#work', id: 'work' },
+  { label: 'Experience', href: '#experience', id: 'experience' },
+  { label: 'Skills', href: '#skills', id: 'skills' },
+  { label: 'Milestones', href: '#stats', id: 'stats' },
 ];
 
 const PROJECTS = [
   {
     title: 'Tafayyu (تفيُّؤ)',
-    subtitle: 'Comprehensive Islamic Web App',
-    year: '2026',
-    icon: BookOpen,
-    color: 'cyan',
-    points: [
-      'Developed a modern, interactive Quran reader with live recitation synchronization, smart search, and auto-scrolling.',
-      'Engineered an interactive memorization tracker, daily adhkar module, and smart tasbeeh with haptic feedback.',
-      'Integrated accurate prayer times, Qibla compass, Hijri calendar, and offline-ready PWA capabilities using Next.js and Tailwind CSS.',
-    ],
-    tags: ['Next.js', 'React', 'Tailwind', 'PWA'],
+    subtitle: 'Comprehensive Islamic Web App (PWA)',
+    description: 'An interactive Quran and worship experience featuring real-time verse synchronization, instant global search, automated memorization tester, smart tasbeeh with haptic feedback, and offline PWA support.',
+    image: '/media/templates/portfolio/work-automotive-motion.jpg',
+    tags: ['Next.js 16', 'React', 'Tailwind CSS', 'PWA', 'REST APIs'],
     link: 'https://tafayyu-quran.vercel.app/',
+    span: 'md:col-span-7',
+    year: '2026',
+    featured: true
   },
   {
     title: 'Cleano',
-    subtitle: 'Full-Stack Web Application',
-    year: '2025',
-    icon: Wrench,
-    color: 'cyan',
-    points: [
-      'Developed a comprehensive web application for managing housekeeping and cleaning services, featuring a dual-interface structure (customer portal & admin dashboard).',
-      'Implemented user authentication, database integration, and order tracking systems to manage service requests efficiently.',
-      'Engineered admin dashboard features including staff assignment management, revenue tracking, data visualization tools, and automated invoice generation.',
-    ],
-    tags: ['Full-Stack', 'Auth', 'Dashboard', 'Database'],
+    subtitle: 'Housekeeping & Services Platform',
+    description: 'Full-stack application with a dual-portal architecture: interactive customer booking engine and a high-performance administration dashboard with staff assignment and live revenue analytics.',
+    image: '/media/templates/portfolio/work-urban-architecture.jpg',
+    tags: ['React', 'Tailwind CSS', 'Dashboard', 'Admin Portal'],
     link: 'https://cleano-tf.vercel.app/',
+    span: 'md:col-span-5',
+    year: '2025',
+    featured: true
   },
   {
     title: 'VISIONAID',
-    subtitle: 'Team: Binary Mind',
+    subtitle: 'Assistive System for the Visually Impaired',
+    description: 'Pioneered technical specifications and full Work Breakdown Structure (WBS) for an AI-powered assistive wearable, bridging computer vision models with real-world tactile interfaces.',
+    image: '/media/templates/portfolio/work-human-perspective.jpg',
+    tags: ['AI Vision', 'Systems Architecture', 'WBS', 'Binary Mind'],
+    span: 'md:col-span-5',
     year: '2025',
-    icon: Eye,
-    color: 'neon',
-    points: [
-      'Contributed to the planning and technical documentation of an AI-based assistive system.',
-      'Collaborated with team members to develop a comprehensive Work Breakdown Structure (WBS) and specify functional requirements, including hardware interface specifications.',
-    ],
-    tags: ['AI', 'Documentation', 'Team Project'],
+    featured: false
   },
   {
-    title: 'Community Automation Workflow',
-    subtitle: 'n8n Platform',
+    title: 'Community Automation Pipeline',
+    subtitle: 'n8n Workflow Engine',
+    description: 'Automated student registration, processing, and real-time syncing across Google Sheets and community tools, orchestrating data seamlessly for 560+ student records.',
+    image: '/media/templates/portfolio/work-brand-identity.jpg',
+    tags: ['n8n Engine', 'Workflow Automation', 'Integration'],
+    span: 'md:col-span-7',
     year: '2025',
-    icon: Workflow,
-    color: 'cyan',
-    points: [
-      'Built an automated workflow connecting community registration forms directly to Google Sheets using the n8n platform.',
-      'Gained foundational experience in workflow automation and system integrations, improving community data management.',
-    ],
-    tags: ['n8n', 'Automation', 'Google Sheets'],
-  },
-  {
-    title: 'Learn Competitive Programming',
-    subtitle: 'Community Initiative',
-    year: '2025',
-    icon: BookOpen,
-    color: 'neon',
-    points: [
-      'Launched a structured project to promote algorithmic problem-solving within the student community.',
-      'Directed the creation of technical and visual branding assets to engage students and encourage participation in coding competitions.',
-    ],
-    tags: ['Community', 'Branding', 'Education'],
+    featured: false
   },
 ];
 
-const SKILLS = {
-  'Languages': { items: ['C++', 'Python', 'Java', 'C#', 'SQL'], icon: Terminal },
-  'Tools & Methodologies': { items: ['Workflow Automation (n8n)', 'Git', 'Software Engineering Principles'], icon: Wrench },
-  'Concepts': { items: ['OOP', 'Data Structures & Algorithms', 'Competitive Programming', 'Databases'], icon: Brain },
-  'Soft Skills': { items: ['Problem Solving', 'Leadership', 'Analytical Thinking', 'Self-Learning', 'Teamwork'], icon: Zap },
+const EXPERIENCES = [
+  {
+    role: 'Leader',
+    organization: 'ICPC BUA',
+    community: 'Competitive Programming Community',
+    period: 'Sep. 2026 – Present',
+    badge: 'Current Role',
+    description: 'Directing the competitive programming community at Badr University in Assiut. Leading advanced curriculum strategies, algorithmic workshops, and coaching contest teams for national-level ECPC participation.',
+    skills: ['Leadership', 'Algorithmic Coaching', 'Community Strategy', 'Curriculum Design']
+  },
+  {
+    role: 'Co-Lead',
+    organization: 'ICPC BUA',
+    community: 'Competitive Programming Community',
+    period: 'Oct. 2025 – Sep. 2026',
+    badge: 'Completed',
+    description: 'Co-led a core community of 80+ active problem solvers. Spearheaded the university annual orientation, mobilizing a 9-member instruction committee to introduce 560+ freshmen to competitive programming.',
+    skills: ['Event Management', 'Public Speaking', 'Team Coordination', 'Mentorship']
+  }
+];
+
+const SKILL_CATEGORIES = [
+  {
+    title: 'Programming Languages',
+    icon: Terminal,
+    skills: ['C#', 'C++', 'Python', 'Java', 'SQL']
+  },
+  {
+    title: 'Backend & Web Technologies',
+    icon: Code2,
+    skills: ['.NET / ASP.NET Core', 'RESTful APIs', 'Next.js', 'React', 'Tailwind CSS']
+  },
+  {
+    title: 'Core Concepts & Engineering',
+    icon: Layers,
+    skills: ['Data Structures & Algorithms', 'Object-Oriented Programming (OOP)', 'Database Design', 'Design Patterns']
+  },
+  {
+    title: 'Tools & Methodologies',
+    icon: Briefcase,
+    skills: ['Git & GitHub', 'n8n Automation', 'Visual Studio', 'VS Code', 'Agile Planning']
+  }
+];
+
+const STATS_DATA = [
+  { value: 600, suffix: '+', label: 'Codeforces Solved Problems' },
+  { textValue: 'Pupil', label: 'Codeforces Official Rank' },
+  { value: 67, prefix: '#', label: 'ECPC 2026 Contest Day Rank' },
+  { value: 560, suffix: '+', label: 'Students Mentored & Onboarded' }
+];
+
+const EXPLORATION_ITEMS = [
+  { image: '/media/templates/portfolio/exploration-1.jpg', rotate: -3 },
+  { image: '/media/templates/portfolio/exploration-2.jpg', rotate: 2 },
+  { image: '/media/templates/portfolio/exploration-3.jpg', rotate: -2 },
+  { image: '/media/templates/portfolio/exploration-4.jpg', rotate: 3 },
+  { image: '/media/templates/portfolio/exploration-5.jpg', rotate: -3 },
+  { image: '/media/templates/portfolio/exploration-6.jpg', rotate: 2 },
+];
+
+/* ─── HELPER HOOKS & UTILITIES ─── */
+const onAnchorClick = (event, href) => {
+  if (!href.startsWith('#') || href.length < 2) return;
+  const target = document.getElementById(href.slice(1));
+  if (!target) return;
+  event.preventDefault();
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-const ACHIEVEMENTS = [
-  {
-    icon: Code,
-    title: 'Codeforces Pupil — 600+ Problems',
-    description: 'Achieved Pupil rank and demonstrated advanced proficiency in data structures and algorithmic optimization through solving 600+ competitive programming problems.',
-    color: 'cyan',
-  },
-  {
-    icon: Trophy,
-    title: 'ECPC 2025 & 2026 Contestant',
-    description: 'Competed in the Egyptian Collegiate Programming Contest (ECPC) in 2025 and 2026. Ranked 67th on the contest day in 2026, applying advanced algorithms under strict time constraints at the national level.',
-    color: 'neon',
-  },
-];
-
-/* ═══════════════════════════════════════════════════════ */
-/*                     MAIN APP                          */
-/* ═══════════════════════════════════════════════════════ */
-function App() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileNav, setMobileNav] = useState(false);
-  const [showTop, setShowTop] = useState(false);
+const useCountUp = (target, active, duration = 1400) => {
+  const [value, setValue] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40);
-      setShowTop(window.scrollY > 600);
+    if (!active || typeof target !== 'number') return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setValue(Math.round(eased * target));
+      if (p < 1) raf = requestAnimationFrame(tick);
     };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [active, target, duration]);
+
+  return value;
+};
+
+/* ─── PRIMITIVES & COMPONENTS ─── */
+const RingLink = ({ href, children, ariaLabel, target, rel, outerClassName, innerClassName, onClick }) => {
+  return (
+    <a
+      href={href}
+      aria-label={ariaLabel}
+      target={target}
+      rel={rel ?? (target === '_blank' ? 'noreferrer' : undefined)}
+      onClick={onClick ?? ((e) => onAnchorClick(e, href))}
+      className={cn('group relative inline-flex shrink-0', outerClassName)}
+    >
+      <span
+        aria-hidden="true"
+        className="pf-gradient pointer-events-none absolute -inset-[2px] rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      />
+      <span
+        className={cn(
+          'relative inline-flex items-center justify-center gap-1.5 rounded-full transition-colors duration-300',
+          innerClassName,
+        )}
+      >
+        {children}
+      </span>
+    </a>
+  );
+};
+
+const SectionHeader = ({ eyebrow, lead, accent, trailing = '', subtext, viewAll, className }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+      viewport={{ once: true, margin: '-80px' }}
+      className={className}
+    >
+      <div className="flex items-center gap-3">
+        <span className="h-px w-8 bg-neutral-800" />
+        <span className="text-xs tracking-[0.3em] text-neutral-400 uppercase font-mono">{eyebrow}</span>
+      </div>
+      <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-2xl">
+          <h2 className="text-3xl leading-[1.1] font-medium tracking-tight text-white sm:text-4xl lg:text-5xl">
+            {lead} <span className="font-display font-normal italic text-neutral-300">{accent}</span> {trailing}
+          </h2>
+          <p className="mt-3 max-w-lg text-sm text-neutral-400 sm:text-base leading-relaxed">{subtext}</p>
+        </div>
+        {viewAll && (
+          <RingLink
+            href={viewAll.href}
+            outerClassName="hidden md:inline-flex"
+            innerClassName="bg-neutral-900 border border-neutral-800 px-4 py-2 text-xs text-white backdrop-blur-md hover:bg-neutral-800"
+          >
+            {viewAll.label}
+            <ArrowRight className="size-3.5" />
+          </RingLink>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+/* ─── LOADING SCREEN ─── */
+const LoadingScreen = ({ onComplete }) => {
+  const [count, setCount] = useState(0);
+  const [wordIndex, setWordIndex] = useState(0);
+  const [exiting, setExiting] = useState(false);
+  const WORDS = ['Architect', 'Optimize', 'Execute'];
+
+  useEffect(() => {
+    let raf = 0;
+    const start = performance.now();
+    const duration = 2200;
+
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      setCount(Math.round(progress * 100));
+      if (progress < 1) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      setExiting(true);
+      setTimeout(onComplete, 400);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [onComplete]);
+
+  useEffect(() => {
+    const id = setInterval(() => setWordIndex((i) => (i + 1) % WORDS.length), 700);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      animate={{ opacity: exiting ? 0 : 1 }}
+      transition={{ duration: 0.4, ease: 'easeInOut' }}
+      className="fixed inset-0 z-[9999] flex flex-col justify-between p-8 bg-[#0a0a0a] text-white"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-xs tracking-[0.3em] text-neutral-400 uppercase font-mono">
+          Mohamed Abdalrasoul • Portfolio '26
+        </span>
+        <span className="text-xs tracking-[0.2em] text-cyan-400 font-mono">INITIALIZING</span>
+      </div>
+
+      <div className="flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={wordIndex}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="font-display text-5xl md:text-7xl lg:text-8xl italic text-neutral-200"
+          >
+            {WORDS[wordIndex]}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <div className="flex items-baseline justify-between">
+          <span className="text-xs text-neutral-500 font-mono tracking-wider">SYSTEM READY</span>
+          <span className="font-display text-5xl md:text-7xl tabular-nums text-neutral-200">
+            {String(count).padStart(3, '0')}
+          </span>
+        </div>
+        <div className="h-[2px] w-full bg-neutral-900 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-300 transition-all duration-100 ease-out shadow-[0_0_12px_rgba(0,240,255,0.5)]"
+            style={{ width: `${count}%` }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ─── NAVBAR ─── */
+const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState('home');
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  return (
-    <div className="min-h-screen bg-darkBg text-slate-100 relative">
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        }
+      },
+      { rootMargin: '-40% 0px -50% 0px', threshold: 0 },
+    );
+    NAV_LINKS.forEach((link) => {
+      const el = document.getElementById(link.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
-      {/* ──── Background Glows ──── */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-15%] left-[-10%] w-[600px] h-[600px] bg-cyberCyan/8 rounded-full blur-[160px]" />
-        <div className="absolute top-[40%] right-[-15%] w-[700px] h-[700px] bg-cyberNeon/6 rounded-full blur-[180px]" />
-        <div className="absolute bottom-[-10%] left-[30%] w-[500px] h-[500px] bg-cyberCyan/5 rounded-full blur-[140px]" />
+  return (
+    <nav className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 md:pt-6">
+      <div
+        className={cn(
+          'inline-flex items-center rounded-full border border-white/10 bg-neutral-950/80 px-2.5 py-2 backdrop-blur-xl transition-all duration-300 shadow-2xl shadow-black/80',
+          scrolled && 'border-white/20 bg-neutral-950/95 shadow-cyan-950/20',
+        )}
+      >
+        {/* Monogram Logo */}
+        <a
+          href="#home"
+          aria-label="Home"
+          onClick={(e) => onAnchorClick(e, '#home')}
+          className="group relative flex size-9 shrink-0 items-center justify-center rounded-full transition-transform duration-300 hover:scale-105"
+        >
+          <span className="pf-gradient absolute inset-0 rounded-full opacity-80 group-hover:opacity-100 transition-opacity" />
+          <span className="absolute inset-[1.5px] rounded-full bg-neutral-950" />
+          <span className="font-display relative text-[14px] leading-none italic font-bold text-white tracking-wider">
+            {PERSONAL_INFO.initials}
+          </span>
+        </a>
+
+        <span className="mx-2 hidden h-4 w-px bg-neutral-800 sm:block" />
+
+        <div className="flex items-center gap-0.5">
+          {NAV_LINKS.map((link) => {
+            const isActive = active === link.id;
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={(e) => onAnchorClick(e, link.href)}
+                className={cn(
+                  'rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:px-4 sm:py-2 sm:text-sm',
+                  isActive
+                    ? 'bg-neutral-800 text-white font-semibold shadow-inner'
+                    : 'text-neutral-400 hover:bg-neutral-900 hover:text-white',
+                )}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+        </div>
+
+        <span className="mx-2 hidden h-4 w-px bg-neutral-800 sm:block" />
+
+        <a
+          href="/cv.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative inline-flex shrink-0"
+        >
+          <span className="pf-gradient pointer-events-none absolute -inset-[2px] rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <span className="relative inline-flex items-center justify-center gap-1.5 rounded-full bg-neutral-900 border border-neutral-800 px-3 py-1.5 text-xs text-white backdrop-blur-md sm:px-4 sm:py-2 sm:text-sm hover:bg-neutral-800">
+            <FileText className="size-3.5 text-cyan-400" />
+            <span>CV</span>
+          </span>
+        </a>
+      </div>
+    </nav>
+  );
+};
+
+/* ─── HERO SECTION ─── */
+const Hero = ({ start = true }) => {
+  const rootRef = useRef(null);
+  const [roleIndex, setRoleIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setRoleIndex((i) => (i + 1) % PERSONAL_INFO.roles.length);
+    }, 2400);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (!start) return;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.fromTo('.hero-badge', { opacity: 0, y: -15 }, { opacity: 1, y: 0, duration: 0.8, delay: 0.1 })
+        .fromTo('.name-reveal', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1.1 }, '-=0.5')
+        .fromTo('.lead-rise', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.15 }, '-=0.6')
+        .fromTo('.hero-actions', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.8 }, '-=0.4');
+    }, rootRef);
+    return () => ctx.revert();
+  }, [start]);
+
+  return (
+    <section
+      ref={rootRef}
+      id="home"
+      className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-20 pb-16"
+    >
+      <Navbar />
+
+      {/* Video Background */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <video
+          src="/media/templates/portfolio/background.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover opacity-50"
+        />
+        <div className="absolute inset-0 bg-[#0a0a0a]/75 backdrop-blur-[2px]" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#0a0a0a]/90 to-transparent" />
       </div>
 
-      {/* ═══════════ NAVBAR ═══════════ */}
-      <motion.nav
-        initial={{ y: -80 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-darkBg/80 backdrop-blur-xl border-b border-slate-800/60 shadow-lg shadow-black/20' : ''}`}
-      >
-        <div className="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between h-16">
-          <a href="#hero" className="text-lg font-extrabold tracking-tight">
-            <span className="text-cyberCyan">{'<'}</span>
-            <span className="text-white">MA</span>
-            <span className="text-cyberCyan">{'/>'}</span>
+      <div className="relative z-10 flex flex-col items-center px-6 text-center max-w-4xl mx-auto">
+        {/* Status Pill Badge */}
+        <div className="hero-badge mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md">
+          <span className="relative flex size-2">
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-cyan-400 opacity-75" />
+            <span className="relative inline-flex size-2 rounded-full bg-cyan-400" />
+          </span>
+          <span className="text-xs font-mono tracking-[0.2em] text-neutral-300 uppercase">
+            Collection '26 • Open to Opportunities
+          </span>
+        </div>
+
+        {/* Hero Title */}
+        <h1 className="name-reveal font-display mb-6 text-6xl leading-[0.92] tracking-tight italic text-white md:text-8xl lg:text-9xl drop-shadow-sm">
+          {PERSONAL_INFO.name}
+        </h1>
+
+        {/* Dynamic Role Rotator */}
+        <div className="lead-rise mb-4 flex items-center justify-center gap-2 text-xl sm:text-2xl text-neutral-200">
+          <span className="text-neutral-400">A</span>
+          <div className="relative h-8 sm:h-9 overflow-hidden flex items-center min-w-[240px] sm:min-w-[280px] justify-center">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={roleIndex}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -20, opacity: 0 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                className="font-display absolute text-2xl sm:text-3xl italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-white font-medium"
+              >
+                {PERSONAL_INFO.roles[roleIndex]}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+          <span className="text-neutral-400">based in {PERSONAL_INFO.location}.</span>
+        </div>
+
+        {/* Subtitle Bio */}
+        <p className="lead-rise mb-10 max-w-xl text-sm sm:text-base text-neutral-400 leading-relaxed font-sans">
+          {PERSONAL_INFO.bio}
+        </p>
+
+        {/* Call to Actions */}
+        <div className="hero-actions inline-flex flex-wrap items-center justify-center gap-4">
+          <RingLink
+            href="#work"
+            outerClassName="transition-transform duration-300 hover:scale-105"
+            innerClassName="bg-white px-7 py-3.5 text-sm font-semibold text-neutral-950 group-hover:bg-neutral-950 group-hover:text-white"
+          >
+            <span>Explore Works</span>
+            <ArrowRight className="size-4" />
+          </RingLink>
+
+          <a
+            href="/cv.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative inline-flex shrink-0 transition-transform duration-300 hover:scale-105"
+          >
+            <span className="pf-gradient pointer-events-none absolute -inset-[2px] rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <span className="relative inline-flex items-center justify-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/80 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-md group-hover:border-transparent group-hover:bg-neutral-900">
+              <FileText className="size-4 text-cyan-400" />
+              <span>Print / View Resume</span>
+              <ArrowUpRight className="size-4 text-neutral-400 group-hover:text-white" />
+            </span>
           </a>
-
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                target={l.external ? '_blank' : undefined}
-                rel={l.external ? 'noopener noreferrer' : undefined}
-                className={l.external
-                  ? 'px-3 py-1.5 text-sm font-semibold text-cyberCyan border border-cyberCyan/30 rounded-lg hover:bg-cyberCyan/10 transition-all duration-300 flex items-center gap-1.5 ml-1'
-                  : 'px-3 py-1.5 text-sm text-slate-400 hover:text-cyberCyan transition-colors rounded-lg hover:bg-cyberCyan/5 font-medium'
-                }
-              >
-                {l.external && <FileText size={14} />}
-                {l.label}
-              </a>
-            ))}
-          </div>
-
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setMobileNav(!mobileNav)}
-            className="md:hidden text-slate-400 hover:text-white transition-colors p-2"
-            aria-label="Toggle navigation"
-          >
-            {mobileNav ? <X size={22} /> : <Menu size={22} />}
-          </button>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        {mobileNav && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-darkBg/95 backdrop-blur-xl border-b border-slate-800"
-          >
-            <div className="flex flex-col px-4 pb-4 gap-1">
-              {NAV_LINKS.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  target={l.external ? '_blank' : undefined}
-                  rel={l.external ? 'noopener noreferrer' : undefined}
-                  onClick={() => setMobileNav(false)}
-                  className={l.external
-                    ? 'px-3 py-2.5 text-sm font-semibold text-cyberCyan border border-cyberCyan/30 rounded-lg hover:bg-cyberCyan/10 transition-all flex items-center gap-1.5'
-                    : 'px-3 py-2.5 text-sm text-slate-400 hover:text-cyberCyan transition-colors rounded-lg hover:bg-cyberCyan/5'
-                  }
-                >
-                  {l.external && <FileText size={14} />}
-                  {l.label}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </motion.nav>
+      {/* Scroll Down Indicator */}
+      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
+        <span className="text-[11px] font-mono tracking-[0.25em] text-neutral-500 uppercase">Scroll</span>
+        <span className="relative block h-10 w-px overflow-hidden bg-neutral-800">
+          <span className="pf-gradient animate-scroll-down absolute inset-x-0 top-0 block h-1/2 w-full" />
+        </span>
+      </div>
+    </section>
+  );
+};
 
-      {/* ═══════════ HERO ═══════════ */}
-      <section id="hero" className="min-h-screen flex flex-col md:flex-row justify-center items-center relative z-10 px-4 gap-12 md:gap-20 max-w-6xl mx-auto pt-20 md:pt-0">
-        
-        {/* Profile Image (Left on Desktop) */}
-        <motion.div
-          initial={{ opacity: 0, x: -50, scale: 0.9 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="relative w-56 h-56 md:w-80 md:h-80 shrink-0"
-        >
-          <motion.div
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-full h-full relative"
-          >
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyberCyan to-cyberNeon blur-xl opacity-60 animate-pulse" />
-            <img 
-              src="/profile.jpg" 
-              alt="Mohamed Abdalrasoul" 
-              className="relative z-10 w-full h-full object-cover rounded-full border-4 border-slate-900 shadow-[0_0_50px_rgba(0,240,255,0.2)]"
-            />
-          </motion.div>
-        </motion.div>
-
-        {/* Text Content (Right on Desktop) */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
-          className="text-center md:text-left max-w-2xl"
-        >
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
-            <span className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Mohamed</span>
-            <br />
-            <span className="text-cyberCyan">Abdalrasoul</span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-slate-400 font-light mb-8 leading-relaxed">
-            CS Student • Backend .NET Developer
-          </p>
-
-          <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-10">
-            <a href="#projects" className="inline-flex items-center gap-2 px-6 py-3 bg-cyberCyan/10 border border-cyberCyan/30 text-cyberCyan rounded-xl font-semibold text-sm hover:bg-cyberCyan/20 hover:border-cyberCyan/50 transition-all duration-300 hover:shadow-[0_0_25px_-5px_rgba(0,240,255,0.3)]">
-              <FolderGit2 size={16} />
-              View Projects
-            </a>
-            <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800/60 border border-slate-700 text-white rounded-xl font-semibold text-sm hover:bg-slate-800 hover:border-slate-600 transition-all duration-300">
-              <Send size={16} />
-              Contact Me
-            </a>
-          </div>
-
-          <div className="flex gap-5 justify-center md:justify-start">
-            {[
-              { Icon: Github, href: 'https://github.com/m7mddgg', hoverColor: '#00f0ff' },
-              { Icon: Linkedin, href: 'https://linkedin.com/in/mohamedabdalrasoul00', hoverColor: '#00f0ff' },
-              { Icon: Mail, href: 'mailto:mohamedabdalrasoul@gmail.com', hoverColor: '#ff007f' },
-              { Icon: Phone, href: 'tel:+201205169491', hoverColor: '#00f0ff' },
-            ].map(({ Icon, href, hoverColor }) => (
-              <motion.a
-                key={href}
-                href={href}
-                target={href.startsWith('http') ? '_blank' : undefined}
-                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                whileHover={{ scale: 1.2, color: hoverColor }}
-                className="text-slate-500 p-2.5 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-slate-600 transition-colors"
-              >
-                <Icon size={20} />
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
+/* ─── SELECTED WORKS (BENTO GRID) ─── */
+const SelectedWorks = () => {
+  return (
+    <section id="work" className="bg-[#0a0a0a] py-20 md:py-28">
+      <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-16">
+        <SectionHeader
+          eyebrow="Portfolio & Systems"
+          lead="Featured"
+          accent="projects"
+          subtext="A curated selection of robust full-stack applications, system designs, and automation workflows engineered for performance."
+          viewAll={{ label: 'View all repositories', href: PERSONAL_INFO.github }}
+          className="mb-12 md:mb-16"
+        />
 
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-10 text-slate-600"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={{
+            hidden: {},
+            show: { transition: { staggerChildren: 0.15 } },
+          }}
+          className="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-7"
         >
-          <ChevronDown size={28} />
-        </motion.div>
-      </section>
+          {PROJECTS.map((project) => (
+            <motion.div
+              key={project.title}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                show: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+              className={cn(
+                'group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/40 p-6 md:p-8 transition-all duration-500 hover:border-neutral-700 hover:bg-neutral-900/70',
+                project.span,
+              )}
+            >
+              {/* Halftone / Gradient Background Texture */}
+              <div
+                className="absolute inset-0 opacity-15 pointer-events-none"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+                  backgroundSize: '16px 16px',
+                }}
+              />
 
-      {/* ═══════════ ABOUT + STATS ═══════════ */}
-      <section id="about" className="relative z-10 py-24 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <SectionTitle icon={Terminal} title="About Me" subtitle="whoami" />
-
-          {/* Info cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <FadeIn delay={0.1} className="md:col-span-2">
-              <GlassCard className="p-8 h-full relative group">
-                <div className="absolute top-4 right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Cpu size={140} />
+              <div className="relative z-10">
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <span className="font-mono text-xs text-cyan-400 tracking-wider">
+                    {project.year} • {project.subtitle}
+                  </span>
+                  {project.link && (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 rounded-full border border-neutral-700 bg-neutral-800/80 px-3 py-1 text-xs text-neutral-300 hover:border-cyan-400 hover:text-white transition-colors"
+                    >
+                      <span>Live Demo</span>
+                      <ExternalLink className="size-3 text-cyan-400" />
+                    </a>
+                  )}
                 </div>
-                <div className="relative z-10">
-                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <GraduationCap size={20} className="text-cyberCyan" /> Education
-                  </h3>
-                  <div className="border-l-2 border-cyberCyan/30 pl-5 space-y-1">
-                    <h4 className="text-lg font-semibold text-slate-200">Badr University in Assiut (BUA)</h4>
-                    <p className="text-sm text-cyberCyan font-mono">Bachelor's Degree • Oct. 2024 – Jul. 2028</p>
-                    <p className="text-sm text-slate-400">Computer Science</p>
-                    <p className="text-sm text-slate-500 mt-2">GPA: <span className="text-white font-bold">3.1</span></p>
-                  </div>
-                  <p className="text-slate-400 text-sm mt-6 leading-relaxed">
-                    Focused on computer science core disciplines, backend development, and high-performance algorithmic problem-solving. Active contributor to the ICPC competitive programming community.
-                  </p>
-                </div>
-              </GlassCard>
-            </FadeIn>
 
-            <FadeIn delay={0.2}>
-              <div className="flex flex-col gap-4 h-full">
-                <GlassCard className="p-5 flex items-center gap-4 flex-1">
-                  <div className="p-3 rounded-xl bg-cyberCyan/10 text-cyberCyan shrink-0"><MapPin size={22} /></div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase tracking-wider font-mono">Location</p>
-                    <p className="text-white font-semibold">Assiut, Egypt</p>
-                  </div>
-                </GlassCard>
-                <GlassCard className="p-5 flex items-center gap-4 flex-1">
-                  <div className="p-3 rounded-xl bg-cyberNeon/10 text-cyberNeon shrink-0"><Phone size={22} /></div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase tracking-wider font-mono">Phone</p>
-                    <p className="text-white font-semibold text-sm">+20 120 516 9491</p>
-                  </div>
-                </GlassCard>
-                <GlassCard className="p-5 flex items-center gap-4 flex-1">
-                  <div className="p-3 rounded-xl bg-cyberCyan/10 text-cyberCyan shrink-0"><Mail size={22} /></div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase tracking-wider font-mono">Email</p>
-                    <p className="text-white font-semibold text-sm break-all">mohamedabdalrasoul@gmail.com</p>
-                  </div>
-                </GlassCard>
+                <h3 className="font-display text-2xl sm:text-3xl text-white italic tracking-tight font-medium mb-3">
+                  {project.title}
+                </h3>
+
+                <p className="text-sm sm:text-base text-neutral-400 leading-relaxed mb-6">
+                  {project.description}
+                </p>
               </div>
-            </FadeIn>
-          </div>
 
-          {/* Stats row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {STATS.map((s, i) => (
-              <FadeIn key={s.label} delay={0.1 * i}>
-                <GlassCard className="p-6 text-center h-full">
-                  <div className={`inline-flex p-3 rounded-xl mb-3 ${s.color === 'cyan' ? 'bg-cyberCyan/10 text-cyberCyan' : 'bg-cyberNeon/10 text-cyberNeon'}`}>
-                    <s.icon size={22} />
-                  </div>
-                  <h3 className="text-3xl font-black text-white font-mono">
-                    {s.prefix || ''}{s.stringValue ? s.stringValue : <Counter from={0} to={s.value} decimals={s.decimals || 0} />}
-                  </h3>
-                  <p className="text-xs text-slate-500 uppercase tracking-wider font-mono mt-1">{s.label}</p>
-                </GlassCard>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
+              {/* Tags & Action Footer */}
+              <div className="relative z-10 mt-auto pt-6 border-t border-neutral-800/60 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-neutral-800/70 px-3 py-1 text-xs text-neutral-300 font-mono"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-      {/* ═══════════ EXPERIENCE ═══════════ */}
-      <section id="experience" className="relative z-10 py-24 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <SectionTitle icon={Briefcase} title="Experience" subtitle="work history" />
-
-          <div className="space-y-8">
-            {EXPERIENCE.map((exp, i) => (
-              <FadeIn key={i} delay={0.15 * i}>
-                <GlassCard className="p-8 relative group">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyberCyan to-cyberNeon rounded-l-2xl" />
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-white">{exp.role}</h3>
-                      <p className="text-cyberCyan font-semibold">{exp.org}</p>
-                      <p className="text-sm text-slate-500">{exp.type}</p>
-                    </div>
-                    <div className="mt-2 md:mt-0 md:text-right shrink-0">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-mono text-cyberCyan bg-cyberCyan/10 px-3 py-1 rounded-full">
-                        {exp.period}
-                      </span>
-                      <p className="text-xs text-slate-500 mt-1 flex items-center gap-1 md:justify-end">
-                        <MapPin size={12} /> {exp.location}
-                      </p>
-                    </div>
-                  </div>
-                  <ul className="space-y-3">
-                    {exp.points.map((p, j) => (
-                      <li key={j} className="flex gap-3 text-sm text-slate-300 leading-relaxed">
-                        <span className="text-cyberCyan mt-1 shrink-0">▹</span>
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </GlassCard>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ PROJECTS ═══════════ */}
-      <section id="projects" className="relative z-10 py-24 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <SectionTitle icon={FolderGit2} title="Projects" subtitle="featured work" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {PROJECTS.map((proj, i) => (
-              <FadeIn key={proj.title} delay={0.1 * i}>
-                <GlassCard className="p-7 h-full flex flex-col group">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 rounded-xl ${proj.color === 'cyan' ? 'bg-cyberCyan/10 text-cyberCyan' : 'bg-cyberNeon/10 text-cyberNeon'}`}>
-                      <proj.icon size={24} />
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="text-xs font-mono text-slate-600">{proj.year}</span>
-                      {proj.link && (
-                        <a href={proj.link} target="_blank" rel="noopener noreferrer" className={`p-1.5 rounded-lg transition-colors ${proj.color === 'cyan' ? 'text-cyberCyan hover:bg-cyberCyan/10' : 'text-cyberNeon hover:bg-cyberNeon/10'}`} title="Visit Project">
-                          <ExternalLink size={16} />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyberCyan transition-colors">{proj.title}</h3>
-                  <p className={`text-xs font-mono mb-4 ${proj.color === 'cyan' ? 'text-cyberCyan/70' : 'text-cyberNeon/70'}`}>{proj.subtitle}</p>
-
-                  <ul className="space-y-2 flex-1">
-                    {proj.points.map((p, j) => (
-                      <li key={j} className="flex gap-2 text-sm text-slate-400 leading-relaxed">
-                        <span className={`mt-1 shrink-0 ${proj.color === 'cyan' ? 'text-cyberCyan' : 'text-cyberNeon'}`}>▹</span>
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="flex flex-wrap gap-2 mt-5 pt-4 border-t border-slate-800">
-                    {proj.tags.map((tag) => (
-                      <span key={tag} className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-400 border border-slate-700/50">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </GlassCard>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ SKILLS ═══════════ */}
-      <section id="skills" className="relative z-10 py-24 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <SectionTitle icon={Wrench} title="Technical Skills" subtitle="tech stack" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {Object.entries(SKILLS).map(([category, { items, icon: Icon }], i) => (
-              <FadeIn key={category} delay={0.1 * i}>
-                <GlassCard className="p-7">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className={`p-2.5 rounded-xl ${i % 2 === 0 ? 'bg-cyberCyan/10 text-cyberCyan' : 'bg-cyberNeon/10 text-cyberNeon'}`}>
-                      <Icon size={20} />
-                    </div>
-                    <h3 className="text-lg font-bold text-white">{category}</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {items.map((skill) => (
-                      <motion.span
-                        key={skill}
-                        whileHover={{ scale: 1.05, y: -2 }}
-                        className={`text-sm font-medium px-4 py-2 rounded-xl border transition-all duration-200 cursor-default ${
-                          i % 2 === 0
-                            ? 'bg-cyberCyan/5 border-cyberCyan/20 text-cyberCyan hover:bg-cyberCyan/10 hover:border-cyberCyan/40'
-                            : 'bg-cyberNeon/5 border-cyberNeon/20 text-cyberNeon hover:bg-cyberNeon/10 hover:border-cyberNeon/40'
-                        }`}
-                      >
-                        {skill}
-                      </motion.span>
-                    ))}
-                  </div>
-                </GlassCard>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ ACHIEVEMENTS ═══════════ */}
-      <section className="relative z-10 py-24 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <SectionTitle icon={Trophy} title="Achievements" subtitle="milestones" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {ACHIEVEMENTS.map((a, i) => (
-              <FadeIn key={i} delay={0.1 * i}>
-                <GlassCard className="p-7 relative overflow-hidden group">
-                  <div className={`absolute -top-6 -right-6 w-32 h-32 rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity ${a.color === 'cyan' ? 'bg-cyberCyan' : 'bg-cyberNeon'}`} />
-                  <div className="relative z-10 flex gap-5">
-                    <div className={`p-4 rounded-2xl shrink-0 self-start ${a.color === 'cyan' ? 'bg-cyberCyan/10 text-cyberCyan' : 'bg-cyberNeon/10 text-cyberNeon'}`}>
-                      <a.icon size={28} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-white mb-2">{a.title}</h3>
-                      <p className="text-sm text-slate-400 leading-relaxed">{a.description}</p>
-                    </div>
-                  </div>
-                </GlassCard>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ CONTACT ═══════════ */}
-      <section id="contact" className="relative z-10 py-24 px-4 md:px-8">
-        <div className="max-w-3xl mx-auto text-center">
-          <SectionTitle icon={Send} title="Get In Touch" subtitle="contact" />
-
-          <FadeIn>
-            <GlassCard className="p-10 md:p-14" hover={false}>
-              <p className="text-slate-400 mb-10 max-w-lg mx-auto leading-relaxed">
-                I'm always open to new opportunities, collaborations, and interesting conversations. Feel free to reach out!
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-                {[
-                  { icon: Mail, label: 'Email', value: 'mohamedabdalrasoul@gmail.com', href: 'mailto:mohamedabdalrasoul@gmail.com', color: 'cyan' },
-                  { icon: Phone, label: 'Phone', value: '+20 120 516 9491', href: 'tel:+201205169491', color: 'neon' },
-                  { icon: Linkedin, label: 'LinkedIn', value: 'mohamedabdalrasoul00', href: 'https://linkedin.com/in/mohamedabdalrasoul00', color: 'cyan' },
-                  { icon: Github, label: 'GitHub', value: 'm7mddgg', href: 'https://github.com/m7mddgg', color: 'neon' },
-                ].map(({ icon: Icon, label, value, href, color }) => (
+                {project.link ? (
                   <a
-                    key={label}
-                    href={href}
-                    target={href.startsWith('http') ? '_blank' : undefined}
-                    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 group overflow-hidden ${
-                      color === 'cyan'
-                        ? 'bg-cyberCyan/5 border-cyberCyan/15 hover:border-cyberCyan/40 hover:bg-cyberCyan/10'
-                        : 'bg-cyberNeon/5 border-cyberNeon/15 hover:border-cyberNeon/40 hover:bg-cyberNeon/10'
-                    }`}
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-white group-hover:text-cyan-400 transition-colors"
                   >
-                    <div className={`p-2.5 rounded-lg shrink-0 ${color === 'cyan' ? 'bg-cyberCyan/10 text-cyberCyan' : 'bg-cyberNeon/10 text-cyberNeon'}`}>
-                      <Icon size={18} />
-                    </div>
-                    <div className="text-left min-w-0 flex-1">
-                      <p className="text-[11px] text-slate-500 uppercase tracking-wider font-mono">{label}</p>
-                      <p className="text-sm text-white font-medium group-hover:text-cyberCyan transition-colors truncate">{value}</p>
-                    </div>
-                    <ExternalLink size={14} className="text-slate-600 group-hover:text-slate-400 transition-colors shrink-0" />
+                    <span>Launch</span>
+                    <ArrowUpRight className="size-3.5" />
                   </a>
+                ) : (
+                  <span className="text-xs text-neutral-500 font-mono">Architecture & Specs</span>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+/* ─── LEADERSHIP & EXPERIENCE ─── */
+const Experience = () => {
+  return (
+    <section id="experience" className="bg-[#0a0a0a] py-20 md:py-28 border-t border-neutral-900">
+      <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-16">
+        <SectionHeader
+          eyebrow="Leadership & Journey"
+          lead="Community"
+          accent="experience"
+          subtext="Directing technical communities, organizing large-scale orientations, and mentoring hundreds of student developers in problem solving."
+          className="mb-12 md:mb-16"
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {EXPERIENCES.map((exp, index) => (
+            <motion.div
+              key={exp.role + exp.period}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              className="relative flex flex-col justify-between rounded-3xl border border-neutral-800 bg-neutral-900/30 p-8 hover:border-neutral-700 hover:bg-neutral-900/50 transition-all duration-300"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-cyan-950/60 border border-cyan-800/50 px-3 py-1 text-xs font-mono text-cyan-300">
+                    <Trophy className="size-3 text-cyan-400" />
+                    <span>{exp.badge}</span>
+                  </span>
+                  <span className="text-xs font-mono text-neutral-400">{exp.period}</span>
+                </div>
+
+                <h3 className="text-2xl font-bold text-white mb-1">
+                  {exp.organization} <span className="font-display italic font-normal text-cyan-300">— {exp.role}</span>
+                </h3>
+                <p className="text-xs text-neutral-400 font-mono mb-4">{exp.community}</p>
+
+                <p className="text-sm text-neutral-300 leading-relaxed mb-6">
+                  {exp.description}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-neutral-800/60 flex flex-wrap gap-2">
+                {exp.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full bg-neutral-800/50 px-3 py-1 text-xs text-neutral-400 font-mono"
+                  >
+                    {skill}
+                  </span>
                 ))}
               </div>
-
-              <a
-                href="mailto:mohamedabdalrasoul@gmail.com"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-cyberCyan/20 to-cyberNeon/20 border border-cyberCyan/30 text-white rounded-xl font-semibold text-sm hover:from-cyberCyan/30 hover:to-cyberNeon/30 hover:border-cyberCyan/50 transition-all duration-300 hover:shadow-[0_0_35px_-8px_rgba(0,240,255,0.3)]"
-              >
-                <Mail size={16} />
-                Say Hello
-              </a>
-            </GlassCard>
-          </FadeIn>
+            </motion.div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
+  );
+};
 
-      {/* ═══════════ FOOTER ═══════════ */}
-      <footer className="relative z-10 border-t border-slate-800/60 py-8 px-4 text-center">
-        <p className="text-sm text-slate-600 font-mono">
-          <span className="text-cyberCyan">{'<'}</span> Designed & Built by{' '}
-          <span className="text-slate-400">Mohamed Abdalrasoul</span>{' '}
-          <span className="text-cyberCyan">{'/>'}</span>
-        </p>
-        <p className="text-xs text-slate-700 mt-2">© {new Date().getFullYear()} • All rights reserved</p>
-      </footer>
+/* ─── SKILLS & EXPERTISE ─── */
+const Skills = () => {
+  return (
+    <section id="skills" className="bg-[#0a0a0a] py-20 md:py-28 border-t border-neutral-900">
+      <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-16">
+        <SectionHeader
+          eyebrow="Technical Stack"
+          lead="Core"
+          accent="competencies"
+          subtext="A breakdown of modern languages, frameworks, architecture standards, and tooling utilized in production."
+          className="mb-12 md:mb-16"
+        />
 
-      {/* ═══════════ SCROLL TO TOP ═══════════ */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: showTop ? 1 : 0, scale: showTop ? 1 : 0 }}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-6 right-6 z-50 p-3 rounded-xl bg-cyberCyan/10 border border-cyberCyan/30 text-cyberCyan hover:bg-cyberCyan/20 hover:border-cyberCyan/50 transition-all duration-300 shadow-lg shadow-black/20"
-        aria-label="Scroll to top"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {SKILL_CATEGORIES.map((cat, index) => {
+            const Icon = cat.icon;
+            return (
+              <motion.div
+                key={cat.title}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="rounded-3xl border border-neutral-800 bg-neutral-900/30 p-6 flex flex-col justify-between hover:border-neutral-700 hover:bg-neutral-900/50 transition-all duration-300"
+              >
+                <div>
+                  <div className="mb-4 flex size-10 items-center justify-center rounded-2xl bg-neutral-800/80 text-cyan-400">
+                    <Icon className="size-5" />
+                  </div>
+                  <h3 className="text-base font-semibold text-white mb-4">{cat.title}</h3>
+                  <ul className="space-y-2.5">
+                    {cat.skills.map((s) => (
+                      <li key={s} className="flex items-center gap-2 text-sm text-neutral-400">
+                        <span className="size-1.5 rounded-full bg-cyan-400" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ─── VERIFIED STATS / MILESTONES ─── */
+const Stats = () => {
+  const [active, setActive] = useState(false);
+
+  return (
+    <section id="stats" className="bg-[#0a0a0a] py-20 md:py-28 border-t border-neutral-900">
+      <motion.div
+        onViewportEnter={() => setActive(true)}
+        viewport={{ once: true, margin: '-60px' }}
+        className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-16"
       >
-        <ArrowUp size={20} />
-      </motion.button>
+        <SectionHeader
+          eyebrow="Milestones"
+          lead="Verified"
+          accent="achievements"
+          subtext="Measurable problem-solving milestones attained through consistent algorithmic training and national contests."
+          className="mb-12 md:mb-16"
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {STATS_DATA.map((item) => {
+            const count = useCountUp(item.value, active);
+            return (
+              <div
+                key={item.label}
+                className="flex flex-col items-center sm:items-start border-t border-neutral-800 pt-8"
+              >
+                <span className="font-display text-5xl md:text-6xl text-white italic tabular-nums leading-none">
+                  {item.prefix || ''}
+                  {item.textValue ? item.textValue : count}
+                  {item.suffix || ''}
+                </span>
+                <span className="mt-4 text-xs font-mono tracking-[0.2em] text-neutral-400 uppercase">
+                  {item.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+    </section>
+  );
+};
+
+/* ─── VISUAL PLAYGROUND / EXPLORATIONS ─── */
+const Explorations = () => {
+  const [activeImage, setActiveImage] = useState(null);
+
+  return (
+    <section id="explorations" className="bg-[#0a0a0a] py-20 md:py-28 border-t border-neutral-900">
+      <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-16">
+        <SectionHeader
+          eyebrow="Visual Studies"
+          lead="Creative"
+          accent="explorations"
+          subtext="Creative UI experiments, architectural sketches, and visual engineering artifacts."
+          viewAll={{ label: 'Explore GitHub', href: PERSONAL_INFO.github }}
+          className="mb-12 md:mb-16"
+        />
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {EXPLORATION_ITEMS.map((item, i) => (
+            <motion.button
+              key={item.image}
+              type="button"
+              onClick={() => setActiveImage(item.image)}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="group relative aspect-square overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 cursor-pointer"
+            >
+              <img
+                src={item.image}
+                alt="Exploration"
+                className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="rounded-full bg-white/20 p-2 text-white backdrop-blur-md">
+                  <ArrowUpRight className="size-4" />
+                </span>
+              </div>
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {activeImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActiveImage(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md"
+          >
+            <button
+              type="button"
+              onClick={() => setActiveImage(null)}
+              className="absolute top-6 right-6 p-2 rounded-full bg-neutral-800 text-white hover:bg-neutral-700"
+            >
+              <X className="size-5" />
+            </button>
+            <img
+              src={activeImage}
+              alt="Exploration Preview"
+              onClick={(e) => e.stopPropagation()}
+              className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain border border-neutral-800 shadow-2xl"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+};
+
+/* ─── MARQUEE ─── */
+const Marquee = () => {
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to(trackRef.current, {
+        xPercent: -50,
+        duration: 35,
+        ease: 'none',
+        repeat: -1,
+      });
+    });
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div className="flex overflow-hidden py-4 border-y border-neutral-900 bg-neutral-950/60" aria-hidden="true">
+      <div ref={trackRef} className="flex w-max shrink-0">
+        {[0, 1].map((group) => (
+          <div key={group} className="flex shrink-0">
+            {['SCALABLE BACKEND ARCHITECTURES', 'ALGORITHMIC OPTIMIZATION', 'ASP.NET CORE & C#', 'HIGH-PERFORMANCE SYSTEMS', 'ICPC COMMUNITY LEADERSHIP'].map((phrase, i) => (
+              <span
+                key={i}
+                className="font-display px-8 text-3xl md:text-5xl tracking-tight whitespace-nowrap text-neutral-500/80 italic font-medium"
+              >
+                {phrase} •
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ─── CONTACT & FOOTER ─── */
+const Contact = () => {
+  return (
+    <footer id="contact" className="relative overflow-hidden bg-[#0a0a0a] pt-16 pb-12">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <video
+          src="/media/templates/portfolio/background.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 -scale-y-100 object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-[#0a0a0a]/90" />
+      </div>
+
+      <Marquee />
+
+      <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-16">
+        <div className="flex flex-col items-center py-20 text-center">
+          <span className="mb-4 text-xs font-mono tracking-[0.3em] text-cyan-400 uppercase">
+            Initiate Contact
+          </span>
+          <h2 className="text-4xl md:text-6xl font-medium text-white mb-6 tracking-tight">
+            Let's build <span className="font-display italic font-normal text-neutral-300">something extraordinary</span>.
+          </h2>
+          <p className="max-w-md text-sm sm:text-base text-neutral-400 mb-8 leading-relaxed">
+            Whether you have an upcoming project, a backend engineering opportunity, or wish to connect with competitive programming mentorship, feel free to reach out.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <RingLink
+              href={`mailto:${PERSONAL_INFO.email}`}
+              outerClassName="transition-transform duration-300 hover:scale-105"
+              innerClassName="border border-neutral-700 bg-neutral-900/90 px-6 py-4 font-display text-xl sm:text-2xl italic text-white backdrop-blur-md group-hover:border-transparent"
+            >
+              <Mail className="size-5 text-cyan-400" />
+              <span>{PERSONAL_INFO.email}</span>
+              <ArrowUpRight className="size-4" />
+            </RingLink>
+
+            <a
+              href="/cv.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-950 px-6 py-4 text-sm font-semibold text-white hover:bg-neutral-900 hover:border-neutral-700 transition-all duration-300"
+            >
+              <FileText className="size-4 text-cyan-400" />
+              <span>Download Formal CV (PDF)</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Footer Bottom Bar */}
+        <div className="flex flex-col gap-6 border-t border-neutral-800 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex size-2.5">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-cyan-400/70" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-cyan-400" />
+            </span>
+            <span className="text-xs text-neutral-400 font-mono">Available for software engineering roles</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <a
+              href={PERSONAL_INFO.github}
+              target="_blank"
+              rel="noreferrer"
+              className="flex size-9 items-center justify-center rounded-full border border-neutral-800 text-neutral-400 transition-colors hover:border-white/20 hover:bg-neutral-800 hover:text-white"
+              aria-label="GitHub"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+              </svg>
+            </a>
+            <a
+              href={PERSONAL_INFO.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="flex size-9 items-center justify-center rounded-full border border-neutral-800 text-neutral-400 transition-colors hover:border-white/20 hover:bg-neutral-800 hover:text-white"
+              aria-label="LinkedIn"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+            </a>
+            <a
+              href={PERSONAL_INFO.codeforces}
+              target="_blank"
+              rel="noreferrer"
+              className="flex size-9 items-center justify-center rounded-full border border-neutral-800 text-neutral-400 transition-colors hover:border-white/20 hover:bg-neutral-800 hover:text-white"
+              aria-label="Codeforces"
+            >
+              <Terminal className="size-4" />
+            </a>
+          </div>
+
+          <span className="text-xs text-neutral-500 font-mono">
+            &copy; 2026 {PERSONAL_INFO.name}. All rights reserved.
+          </span>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+/* ─── MAIN PORTFOLIO COMPONENT ─── */
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  return (
+    <div
+      data-slot="portfolio"
+      className="min-h-screen bg-[#0a0a0a] text-neutral-100 antialiased selection:bg-cyan-500/30 selection:text-white"
+    >
+      <MotionConfig reducedMotion="user">
+        {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+        <Hero start={!isLoading} />
+        <SelectedWorks />
+        <Experience />
+        <Skills />
+        <Stats />
+        <Explorations />
+        <Contact />
+      </MotionConfig>
     </div>
   );
 }
-
-export default App;
