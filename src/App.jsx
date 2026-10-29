@@ -41,6 +41,7 @@ const NAV_LINKS = [
   { label: 'Experience', href: '#experience', id: 'experience' },
   { label: 'Skills', href: '#skills', id: 'skills' },
   { label: 'Milestones', href: '#stats', id: 'stats' },
+  { label: 'Certificates', href: '#certificates', id: 'certificates' },
 ];
 
 const PROJECTS = [
@@ -139,13 +140,31 @@ const STATS_DATA = [
   { value: 560, suffix: '+', label: 'Students Mentored & Onboarded' }
 ];
 
-const EXPLORATION_ITEMS = [
-  { image: '/media/templates/portfolio/exploration-1.jpg', rotate: -3 },
-  { image: '/media/templates/portfolio/exploration-2.jpg', rotate: 2 },
-  { image: '/media/templates/portfolio/exploration-3.jpg', rotate: -2 },
-  { image: '/media/templates/portfolio/exploration-4.jpg', rotate: 3 },
-  { image: '/media/templates/portfolio/exploration-5.jpg', rotate: -3 },
-  { image: '/media/templates/portfolio/exploration-6.jpg', rotate: 2 },
+const CERTIFICATES_DATA = [
+  {
+    id: 'ecpc-2026',
+    title: 'The 2026 ICPC ECPC Qualifications',
+    subtitle: 'Collegiate Programming Contest — Day 7',
+    award: 'One-hundred Sixty-fifth Place',
+    date: '19 August 2026',
+    issuedBy: 'International Collegiate Programming Contest (ICPC Foundation)',
+    university: 'Badr University in Assiut',
+    image: '/certificates/ecpc-2026-certificate.png',
+    pdf: '/certificates/ecpc-2026-certificate.pdf',
+    badge: 'ECPC 2026'
+  },
+  {
+    id: 'ecpc-2025',
+    title: 'The 2025 ICPC ECPC Qualifications',
+    subtitle: 'Collegiate Programming Contest — Day 7',
+    award: 'Honorable Mention',
+    date: '06 August 2025',
+    issuedBy: 'International Collegiate Programming Contest (ICPC Foundation)',
+    university: 'Badr University in Assiut',
+    image: '/certificates/ecpc-2025-certificate.png',
+    pdf: '/certificates/ecpc-2025-certificate.pdf',
+    badge: 'ECPC 2025'
+  }
 ];
 
 /* ─── HELPER HOOKS & UTILITIES ─── */
@@ -798,72 +817,150 @@ const Stats = () => {
   );
 };
 
-/* ─── VISUAL PLAYGROUND / EXPLORATIONS ─── */
-const Explorations = () => {
-  const [activeImage, setActiveImage] = useState(null);
+/* ─── CERTIFICATES & HONORS ─── */
+const Certificates = () => {
+  const [selectedCert, setSelectedCert] = useState(null);
 
   return (
-    <section id="explorations" className="bg-[#0a0a0a] py-20 md:py-28 border-t border-neutral-900">
+    <section id="certificates" className="bg-[#0a0a0a] py-20 md:py-28 border-t border-neutral-900">
       <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-16">
         <SectionHeader
-          eyebrow="Visual Studies"
-          lead="Creative"
-          accent="explorations"
-          subtext="Creative UI experiments, architectural sketches, and visual engineering artifacts."
-          viewAll={{ label: 'Explore GitHub', href: PERSONAL_INFO.github }}
+          eyebrow="Credentials & Honors"
+          lead="Verified"
+          accent="certificates"
+          subtext="Official certificates of achievement awarded by the International Collegiate Programming Contest (ICPC Foundation)."
           className="mb-12 md:mb-16"
         />
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {EXPLORATION_ITEMS.map((item, i) => (
-            <motion.button
-              key={item.image}
-              type="button"
-              onClick={() => setActiveImage(item.image)}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="group relative aspect-square overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 cursor-pointer"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {CERTIFICATES_DATA.map((cert, index) => (
+            <motion.div
+              key={cert.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/40 p-6 sm:p-8 transition-all duration-300 hover:border-neutral-700 hover:bg-neutral-900/60"
             >
-              <img
-                src={item.image}
-                alt="Exploration"
-                className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span className="rounded-full bg-white/20 p-2 text-white backdrop-blur-md">
-                  <ArrowUpRight className="size-4" />
-                </span>
+              <div>
+                {/* Certificate Image Preview */}
+                <div
+                  onClick={() => setSelectedCert(cert)}
+                  className="relative aspect-[1.414/1] w-full overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 cursor-pointer shadow-lg group-hover:shadow-cyan-950/20"
+                >
+                  <img
+                    src={cert.image}
+                    alt={cert.title}
+                    className="size-full object-contain p-2 transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-neutral-950 shadow-md">
+                      <Sparkles className="size-3.5 text-cyan-600" />
+                      <span>Click to Enlarge</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Certificate Meta */}
+                <div className="mt-6">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-950/60 border border-cyan-800/50 px-3 py-1 text-xs font-mono text-cyan-300">
+                      <Award className="size-3 text-cyan-400" />
+                      <span>{cert.badge}</span>
+                    </span>
+                    <span className="text-xs font-mono text-neutral-400">{cert.date}</span>
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                    {cert.title}
+                  </h3>
+                  <p className="text-xs font-mono text-neutral-400 mb-2">{cert.subtitle}</p>
+
+                  <div className="my-4 rounded-xl bg-neutral-950/80 border border-neutral-800/80 p-3.5">
+                    <span className="text-xs font-mono uppercase tracking-wider text-neutral-400 block mb-1">Official Result</span>
+                    <span className="font-display text-2xl italic font-medium text-cyan-300">{cert.award}</span>
+                  </div>
+
+                  <p className="text-xs text-neutral-400">
+                    <span className="text-neutral-300">Institution:</span> {cert.university} • <span className="text-neutral-300">Issuer:</span> {cert.issuedBy}
+                  </p>
+                </div>
               </div>
-            </motion.button>
+
+              {/* Action Buttons */}
+              <div className="mt-6 pt-5 border-t border-neutral-800/70 flex flex-wrap items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCert(cert)}
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-white hover:text-cyan-400 transition-colors cursor-pointer"
+                >
+                  <span>Preview Full Certificate</span>
+                  <ArrowUpRight className="size-3.5" />
+                </button>
+
+                <a
+                  href={cert.pdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-neutral-800/70 border border-neutral-700/70 px-3.5 py-1.5 text-xs font-mono text-neutral-200 hover:bg-neutral-800 hover:text-white transition-colors"
+                >
+                  <FileText className="size-3 text-cyan-400" />
+                  <span>Download PDF</span>
+                </a>
+              </div>
+            </motion.div>
           ))}
+        </div>
+
+        {/* Footer Note */}
+        <div className="mt-12 text-center">
+          <p className="text-xs sm:text-sm font-mono text-neutral-400 inline-flex items-center gap-2 rounded-full border border-neutral-800/80 bg-neutral-900/40 px-5 py-2">
+            <span className="size-1.5 rounded-full bg-cyan-400" />
+            <span>Additional certifications and contest standings will be archived here as achieved.</span>
+          </p>
         </div>
       </div>
 
       {/* Lightbox Modal */}
       <AnimatePresence>
-        {activeImage && (
+        {selectedCert && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setActiveImage(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md"
+            onClick={() => setSelectedCert(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 sm:p-6 backdrop-blur-md"
           >
-            <button
-              type="button"
-              onClick={() => setActiveImage(null)}
-              className="absolute top-6 right-6 p-2 rounded-full bg-neutral-800 text-white hover:bg-neutral-700"
-            >
-              <X className="size-5" />
-            </button>
-            <img
-              src={activeImage}
-              alt="Exploration Preview"
-              onClick={(e) => e.stopPropagation()}
-              className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain border border-neutral-800 shadow-2xl"
-            />
+            <div className="relative max-h-[92vh] max-w-5xl w-full flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => setSelectedCert(null)}
+                className="absolute -top-12 right-0 p-2 rounded-full bg-neutral-800 text-white hover:bg-neutral-700 cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="size-5" />
+              </button>
+              <img
+                src={selectedCert.image}
+                alt={selectedCert.title}
+                onClick={(e) => e.stopPropagation()}
+                className="max-h-[80vh] w-auto rounded-2xl object-contain border border-neutral-800 shadow-2xl bg-white"
+              />
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="mt-4 flex items-center gap-4 text-xs font-mono"
+              >
+                <a
+                  href={selectedCert.pdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-cyan-500 px-4 py-2 font-semibold text-black hover:bg-cyan-400 transition-colors"
+                >
+                  <FileText className="size-3.5" />
+                  <span>Open Official PDF</span>
+                </a>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1030,7 +1127,7 @@ export default function App() {
         <Experience />
         <Skills />
         <Stats />
-        <Explorations />
+        <Certificates />
         <Contact />
       </MotionConfig>
     </div>
